@@ -1,10 +1,12 @@
 <?php
+require '../vendor/autoload.php';
+
 use MillieOfzo\PHPInvoicer\PHPInvoicer;
 
 $invoice = new PHPInvoicer('','€','en');
 
 /* Header Settings */
-$invoice->setLogo("/images/ti_logo_yellow.png");
+$invoice->setLogo("images/ti_logo_yellow.png");
 $invoice->setColor("#4d4c59");
 $invoice->setType("Invoice #75");
 $invoice->setOrderid("2018052100012");
@@ -30,7 +32,7 @@ $invoice->addDiscountTotal(10);
 $invoice->addRow('Swift send', 10);
 $invoice->addTotal(true);
 
-//$invoice->addBadge('Payed');
+$invoice->addBadge('PAID', '#ead57e');
 
 $invoice->addParagraph('fsdfsd sdf s dfds sfds fds fsfd');
 $invoice->setFooternote('Copyright 2018 ASB security');

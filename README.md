@@ -1,4 +1,4 @@
-[![Travis Build Status](https://img.shields.io/travis/millieofzo/php-invoicer.svg?style=flat-square)](https://travis-ci.org/millieofzo/php-invoicer)
+[![Travis Build Status](https://img.shields.io/travis/millieofzo/php-invoicer.svg)](https://travis-ci.org/millieofzo/php-invoicer)
 [![Latest Stable Version](https://poser.pugx.org/millieofzo/php-invoicer/v/stable)](https://packagist.org/packages/millieofzo/php-invoicer)
 [![Total Downloads](https://poser.pugx.org/millieofzo/php-invoicer/downloads)](https://packagist.org/packages/millieofzo/php-invoicer)
 [![Latest Unstable Version](https://poser.pugx.org/millieofzo/php-invoicer/v/unstable)](https://packagist.org/packages/millieofzo/php-invoicer)
@@ -260,8 +260,8 @@ $invoice->addItem($name,$description,$quantity,$price,$vat = false,$discount = f
 | description | string    |  | A string with the description with multi-line support. Use either <br> or \n to add a line-break. |
 | quantity  | int |  | Specify the amount of the product |
 | price  | int  | e.g 826 | The price of the product |
-| vat  | int    |  e.g 21, 8 | Specify a vat percentage, which will calculate a 21% value from subtotal |
-| discount  | int    |  e.g 10, 15, 20 | Specify a discount percentage, which will calculate a 10% discount on the subtotal|
+| vat  | int    |  e.g 21, 8 | Optional. Specify a vat percentage, which will calculate a 21% value from subtotal |
+| discount  | int    |  e.g 10, 15, 20 | Optional. Specify a discount percentage, which will calculate a 10% discount on the subtotal|
 
 ### Adding Subtotal
 
@@ -313,10 +313,11 @@ Adds a badge to your invoice below the products and services. You can use this f
 display that the invoice has been payed.
 
 ```php
-$invoice->addBadge($badge);
+$invoice->addBadge($badge, $color);
 ```
 
 - $badge {string} A string with the text of the badge.
+- $color {string} Optional. A string with the hex code of the color.
 
 ### Add Title
 
