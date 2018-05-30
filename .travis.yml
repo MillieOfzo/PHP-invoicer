@@ -4,6 +4,7 @@ php:
 - 7.0
 - 7.1
 - 7.2
-
+script:
+  - phpunit --bootstrap vendor/autoload.php tests/EmailTest
 before_script:
-- composer self-update
+- composer install --no-interaction
