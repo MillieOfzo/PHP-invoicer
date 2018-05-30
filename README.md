@@ -192,12 +192,10 @@ $invoice->setDue(date('d-m-Y',strtotime('+3 months')));
 ### Issuer Information
 
 Set your company details.
-
+An array with your company details. The first value of the array will be bold on the document so it's suggested to use your company's name. 
+You can add as many lines as you need.
 ```php
-// An array with your company details. The first value of
-// the array will be bold on the document so it's suggested
-// to use your company's name. You can add as
-// many lines as you need.
+
 /** Example: */
 $invoice->setFrom([
     'My Company',
@@ -205,16 +203,19 @@ $invoice->setFrom([
     'Address line 2',
     'City and zip',
     'Country',
-    'VAT number'    
+    'VAT number',
+    'test'
 ]);
 ```
 
 ### Client Information
 
+An array with your clients' details. 
+The first value of the array will be bold on the document so we suggest you to use the company's name. You can add as many lines as you need.
+
+Note: Keep the array count of Issuer and Client the same. Use empty value if necessary
+
 ```php
-// An array with your clients' details. The first value of the
-// array will be bold on the document so we suggest you to use
-// the company's name. You can add as many lines as you need.
 /** Example */
 $invoice->setTo([
    'My Client',
@@ -222,9 +223,11 @@ $invoice->setTo([
    'Address line 2',
    'City and zip',
    'Country',
-   'VAT number'    
+   'VAT number',
+   '' //Note keep count the same as issuer
 ]);
 ```
+
 
 ### Flip Flop
 

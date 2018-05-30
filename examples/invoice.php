@@ -17,8 +17,8 @@ $invoice->setDue(date('d-m-Y',strtotime('+3 months')));
 $invoice->setNumberFormat('.', '');
 
 /* To and from */
-$invoice->setFrom(array("Seller Name","Sample Company Name","128 AA Juanita Ave","Glendora , CA 91740","United States of America"));
-$invoice->setTo(array("Purchaser Name","Sample Company Name","128 AA Juanita Ave","Glendora , CA 91740","United States of America"));
+$invoice->setFrom(array("Seller Name","Sample Company Name","128 AA Juanita Ave","Glendora , CA 91740","United States of America", "sdfsdfsdfsdf"));
+$invoice->setTo(array("Purchaser Name","Sample Company Name","128 AA Juanita Ave","Glendora , CA 91740","United States of America",""));
 
 /* Adding Items in table */
 $invoice->addItem("AMD Athlon X2DC-7450","2.4GHz/1GB/160GB/SMP-DVD/VB",2,2,21);
