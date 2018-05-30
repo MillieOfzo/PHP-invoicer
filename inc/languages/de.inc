@@ -1,6 +1,9 @@
 <?php
+  $lang['subtotal']		= 'Zwischensumme';
+  $lang['orderid']		= 'Auftragsnummer';
   $lang['number']		= 'Referenz';
   $lang['date']			= 'Rechnungsdatum';
+  $lang['time']			= 'Rechnungszeit';  
   $lang['due']			= 'Fälligkeitsdatum';
   $lang['to']			= 'Abrechnung';
   $lang['from']			= 'Unseren Informationen ';

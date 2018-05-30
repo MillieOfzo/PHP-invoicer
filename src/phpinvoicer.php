@@ -3,8 +3,8 @@
  * Contains the PHPInvoicer class.
  *
  * @author      Farjad Tahir
- * @see         http://www.splashpk.com
- * @license     GPL
+ * @author      Roelof Jan van Golen
+ * @license     MIT
  * @since       2017-12-15
  *
  */
@@ -40,21 +40,25 @@ class GenerateInvoice extends FPDF
     public $to;
     public $items;
     public $totals;
+    public $subtotal;
     public $badge;
     public $addText;
     public $footernote;
     public $dimensions;
     public $display_tofrom = true;
 
-    /******************************************
-     * Class Constructor                     *
-     * param : Page Size , Currency, Language *
-     ******************************************/
+    /**
+     * GenerateInvoice constructor.
+     * @param string $size
+     * @param string $currency
+     * @param string $language
+     */
     public function __construct($size = 'A4', $currency = '$', $language = 'en')
     {
         $this->columns            = 4;
         $this->items              = [];
         $this->totals             = [];
+        $this->subtotal           = 0;
         $this->addText            = [];
         $this->firstColumnWidth   = 70;
         $this->currency           = $currency;
@@ -69,6 +73,9 @@ class GenerateInvoice extends FPDF
         $this->SetMargins($this->margins['l'], $this->margins['t'], $this->margins['r']);
     }
 
+    /**
+     * @param $language
+     */
     private function setLanguage($language)
     {
         $this->language = $language;
@@ -76,6 +83,9 @@ class GenerateInvoice extends FPDF
         $this->lang = $lang;
     }
 
+    /**
+     * @param $dsize
+     */
     private function setDocumentSize($dsize)
     {
         switch ($dsize) {
@@ -99,6 +109,10 @@ class GenerateInvoice extends FPDF
         $this->document = $document;
     }
 
+    /**
+     * @param $image
+     * @return array
+     */
     private function resizeToFit($image)
     {
         list($width, $height) = getimagesize($image);
@@ -112,6 +126,10 @@ class GenerateInvoice extends FPDF
         ];
     }
 
+    /**
+     * @param $val
+     * @return float|int
+     */
     private function pixelsToMM($val)
     {
         $mm_inch = 25.4;
@@ -120,6 +138,10 @@ class GenerateInvoice extends FPDF
         return ($val * $mm_inch) / $dpi;
     }
 
+    /**
+     * @param $hex
+     * @return array
+     */
     private function hex2rgb($hex)
     {
         $hex = str_replace("#", "", $hex);
@@ -137,11 +159,19 @@ class GenerateInvoice extends FPDF
         return $rgb;
     }
 
+    /**
+     * @param $string
+     * @return null|string|string[]
+     */
     private function br2nl($string)
     {
         return preg_replace('/\<br(\s*)?\/?\>/i', "\n", $string);
     }
 
+    /**
+     * @param $zone
+     * @return bool
+     */
     public function isValidTimezoneId($zone)
     {
         try {
@@ -153,6 +183,9 @@ class GenerateInvoice extends FPDF
         return true;
     }
 
+    /**
+     * @param string $zone
+     */
     public function setTimeZone($zone = "")
     {
         if (!empty($zone) and $this->isValidTimezoneId($zone) === true) {
@@ -160,31 +193,51 @@ class GenerateInvoice extends FPDF
         }
     }
 
+    /**
+     * @param $title
+     */
     public function setType($title)
     {
         $this->title = $title;
     }
 
+    /**
+     * @param $rgbcolor
+     */
     public function setColor($rgbcolor)
     {
         $this->color = $this->hex2rgb($rgbcolor);
     }
 
+    /**
+     * @param $date
+     */
     public function setDate($date)
     {
         $this->date = $date;
     }
 
+    /**
+     * @param $time
+     */
     public function setTime($time)
     {
         $this->time = $time;
     }
 
+    /**
+     * @param $date
+     */
     public function setDue($date)
     {
         $this->due = $date;
     }
 
+    /**
+     * @param int $logo
+     * @param int $maxWidth
+     * @param int $maxHeight
+     */
     public function setLogo($logo = 0, $maxWidth = 0, $maxHeight = 0)
     {
         if ($maxWidth and $maxHeight) {
@@ -194,105 +247,274 @@ class GenerateInvoice extends FPDF
         $this->dimensions = $this->resizeToFit($logo);
     }
 
+    /**
+     * Hide your company information and the client information
+     */
     public function hide_tofrom()
     {
         $this->display_tofrom = false;
     }
 
+    /**
+     * @param $data
+     */
     public function setFrom($data)
     {
         $this->from = (array)$data;
     }
 
+    /**
+     * @param $data
+     */
     public function setTo($data)
     {
         $this->to = $data;
     }
 
+    /**
+     * @param $reference
+     */
     public function setReference($reference)
     {
         $this->reference = $reference;
     }
 
+    /**
+     * @param $orderid
+     */
     public function setOrderid($orderid)
     {
         $this->orderid = $orderid;
-    }	
-	
+    }
+
+    /**
+     * @param $decimals
+     * @param $thousands_sep
+     */
     public function setNumberFormat($decimals, $thousands_sep)
     {
         $this->referenceformat = [$decimals, $thousands_sep];
     }
 
+    /**
+     * Switch the horizontal positions of your company information and the client information. By default, your company details are on the left.
+     */
     public function flipflop()
     {
         $this->flipflop = true;
     }
 
-    public function addItem($item, $description = "", $quantity, $vat, $price, $discount = 0, $total)
+    /**
+     * Add the invoice items
+     *
+     * @param string $item Item name
+     * @param string $description Item description
+     * @param int    $quantity Quantity specified as integer
+     * @param int    $price Product price specified as integer. Will be converted to decimal
+     * @param bool   $vat Specify vat as a percent integer value. e.g 21, 8 etc.
+     * @param bool   $discount Specify discount as a percent integer value. e.g 21, 8 etc.
+     */
+    public function addItem($item = "", $description = "", $quantity = 0, $price = 0, $vat = false, $discount = false)
     {
         $p['item']        = $item;
         $p['description'] = $this->br2nl($description);
-
+        $p['quantity'] = $quantity;
+        $p['price']    = $price;
+		$p['total']    = $price * $quantity;
+		
+		// discount is in percent
         if ($vat !== false) {
-            $p['vat'] = $vat;
-            if (is_numeric($vat)) {
-                $p['vat'] = $this->currency . ' ' . number_format($vat, 2, $this->referenceformat[0],
+            $p['vat'] = ($p['price'] / 100) * $vat;
+            $p['num'] = ($p['price'] / 100) * $vat;
+            if (is_numeric($p['vat'])) {
+                $p['vat'] = $this->currency . ' ' . number_format($p['vat'], 2, $this->referenceformat[0],
                         $this->referenceformat[1]);
             }
             $this->vatField = true;
             $this->columns  = 5;
-        }
-        $p['quantity'] = $quantity;
-        $p['price']    = $price;
-        $p['total']    = $total;
-
+			$p['total'] = $p['total'] + $p['num'];
+        }		
+        
+		// discount is in percent
         if ($discount !== false) {
             $this->firstColumnWidth = 58;
-            $p['discount']          = $discount;
-            if (is_numeric($discount)) {
-                $p['discount'] = $this->currency . ' ' . number_format($discount, 2, $this->referenceformat[0],
+            $p['discount']          = ($p['price'] / 100) * $discount * $quantity;
+            $p['num']          = ($p['price'] / 100) * $discount * $quantity;
+            if (is_numeric($p['discount'])) {
+                $p['discount'] = $this->currency . ' ' . number_format($p['discount'], 2, $this->referenceformat[0],
                         $this->referenceformat[1]);
             }
+			$p['total'] = $p['total'] - $p['num'];
             $this->discountField = true;
-            $this->columns       = 6;
+			if(($vat !== false))
+			{
+				$this->columns       = 6;
+			}
+			else
+			{
+				$this->columns       = 5;
+			}
+            
         }
         $this->items[] = $p;
+		
+		$this->subtotal += $p['total'];
+		//var_dump( $this->items);
     }
 
-    public function addTotal($name, $value, $colored = false)
+    /**
+     * Add subtotal column. Get value from the combined prices of all specified items
+     *
+     * @param int  $value
+     * @param bool $colored
+     */
+    public function addSubTotal($value = 0, $colored = false)
     {
-        $t['name']  = $name;
+		if($this->subtotal > 0)
+		{
+			$value = $this->subtotal;
+		}
+        $t['name']  = $this->lang['subtotal'];
         $t['value'] = $value;
-        if (is_numeric($value)) {
-            $t['value'] = $this->currency . ' ' . number_format($value, 2, $this->referenceformat[0],
+        $t['num'] = $value;
+        if (is_numeric($t['value'])) {
+            $t['value'] = $this->currency . ' ' . number_format($t['value'], 2, $this->referenceformat[0],
+                    $this->referenceformat[1]);
+        }
+        $t['colored']   = $colored;
+        $this->totals['subtotal'] = $t;
+    }
+
+    /**
+     * Show discount column
+     *
+     * @param      $percent
+     * @param bool $colored
+     */
+    public function addDiscountTotal($percent, $colored = false)
+    {
+        $t['name']  = $this->lang['discount'] . ' ' . $percent . '%';
+        $t['value'] = ($this->subtotal / 100) * $percent;
+        $t['num'] = ($this->subtotal / 100) * $percent;
+        if (is_numeric($t['value'])) {
+            $t['value'] = '- '.$this->currency . ' ' . number_format($t['value'], 2, $this->referenceformat[0],
+                    $this->referenceformat[1]);
+        }
+        $t['colored']   = $colored;
+        $this->totals['discount'] = $t;
+    }
+
+    /**
+     * Show vat column. If discount is specified, vat is calculated after discount is applied
+     *
+     * @param      $percent
+     * @param bool $colored
+     */
+    public function addVatTotal($percent, $colored = false)
+    {
+        $t['name']  = $this->lang['vat'] . ' ' . $percent . '%';
+		if(isset($this->totals['discount']))
+		{
+			$t['value'] = (($this->totals['subtotal']['num'] - $this->totals['discount']['num']) / 100) * $percent;
+			$t['num'] = (($this->totals['subtotal']['num'] - $this->totals['discount']['num']) / 100) * $percent;			
+		}
+		else
+		{
+			$t['value'] = ($this->totals['subtotal']['num'] / 100) * $percent;
+			$t['num'] = ($this->totals['subtotal']['num'] / 100) * $percent;			
+		}
+        if (is_numeric($t['value'])) {
+            $t['value'] = $this->currency . ' ' . number_format($t['value'], 2, $this->referenceformat[0],
+                    $this->referenceformat[1]);
+        }
+        $t['colored']   = $colored;
+        $this->totals['vat'] = $t;
+		//var_dump($this->totals);
+    }
+
+    /**
+     * Show total amount column.
+     *
+     * @param bool $colored
+     */
+    public function addTotal($colored = false)
+    {
+        $t['name']  = $this->lang['total'];
+        $t['value'] = $this->totals['subtotal']['num'];
+
+        if(isset($this->totals['vat']))
+        {
+            $t['value'] = $this->totals['subtotal']['num'] + $this->totals['vat']['num'];
+        }
+		if(isset($this->totals['discount']))
+		{
+			$t['value'] = $t['value'] - $this->totals['discount']['num'];
+		}
+        if (is_numeric($t['value'])) {
+            $t['value'] = $this->currency . ' ' . number_format($t['value'], 2, $this->referenceformat[0],
                     $this->referenceformat[1]);
         }
         $t['colored']   = $colored;
         $this->totals[] = $t;
     }
 
+    /**
+     * Show a additional row.
+     *
+     * @param string $name
+     * @param int $value
+     * @param bool $colored
+     */
+    public function addRow($name,$value,$colored = false)
+    {
+        $t['name']  = $name;
+        $t['value'] = $value;
+
+        if (is_numeric($t['value'])) {
+            $t['value'] = $this->currency . ' ' . number_format($t['value'], 2, $this->referenceformat[0],
+                    $this->referenceformat[1]);
+        }
+        $t['colored']   = $colored;
+        $this->totals[] = $t;
+    }	
+	
+    /**
+     * @param $title
+     */
     public function addTitle($title)
     {
         $this->addText[] = ['title', $title];
     }
 
+    /**
+     * @param $paragraph
+     */
     public function addParagraph($paragraph)
     {
         $paragraph       = $this->br2nl($paragraph);
         $this->addText[] = ['paragraph', $paragraph];
     }
 
+    /**
+     * @param $badge
+     */
     public function addBadge($badge)
     {
         $this->badge = $badge;
     }
 
+    /**
+     * @param $note
+     */
     public function setFooternote($note)
     {
         $this->footernote = $note;
     }
 
+    /**
+     * @param string $name
+     * @param string $destination
+     */
     public function render($name = '', $destination = '')
     {
         $this->AddPage();
@@ -301,6 +523,9 @@ class GenerateInvoice extends FPDF
         $this->Output($name, $destination);
     }
 
+    /**
+     * Generate the table headers
+     */
     public function Header()
     {
         if (isset($this->logo) and !empty($this->logo)) {
@@ -441,13 +666,14 @@ class GenerateInvoice extends FPDF
                 0, 0, 'L', 0);
             $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
             $this->Cell($width_other, 10, iconv("UTF-8", "ISO-8859-1", strtoupper($this->lang['qty'])), 0, 0, 'C', 0);
-            if (isset($this->vatField)) {
+
+            $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+            $this->Cell($width_other, 10, iconv("UTF-8", "ISO-8859-1", strtoupper($this->lang['price'])), 0, 0, 'C', 0);
+			if (isset($this->vatField)) {
                 $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
                 $this->Cell($width_other, 10, iconv("UTF-8", "ISO-8859-1", strtoupper($this->lang['vat'])), 0, 0, 'C',
                     0);
             }
-            $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
-            $this->Cell($width_other, 10, iconv("UTF-8", "ISO-8859-1", strtoupper($this->lang['price'])), 0, 0, 'C', 0);
             if (isset($this->discountField)) {
                 $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
                 $this->Cell($width_other, 10, iconv("UTF-8", "ISO-8859-1", strtoupper($this->lang['discount'])), 0, 0,
@@ -465,6 +691,9 @@ class GenerateInvoice extends FPDF
         }
     }
 
+    /**
+     * Generate the table body
+     */
     public function Body()
     {
         $width_other = ($this->document['w'] - $this->margins['l'] - $this->margins['r'] - $this->firstColumnWidth - ($this->columns * $this->columnSpacing)) / ($this->columns - 1);
@@ -518,6 +747,10 @@ class GenerateInvoice extends FPDF
                 $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
                 $this->Cell($width_other, $cHeight, $item['quantity'], 0, 0, 'C', 1);
                 $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+                $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+                $this->Cell($width_other, $cHeight, iconv('UTF-8', 'windows-1252',
+                    $this->currency . ' ' . number_format($item['price'], 2, $this->referenceformat[0],
+                        $this->referenceformat[1])), 0, 0, 'C', 1);
                 if (isset($this->vatField)) {
                     $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
                     if (isset($item['vat'])) {
@@ -526,11 +759,7 @@ class GenerateInvoice extends FPDF
                         $this->Cell($width_other, $cHeight, '', 0, 0, 'C', 1);
                     }
 
-                }
-                $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
-                $this->Cell($width_other, $cHeight, iconv('UTF-8', 'windows-1252',
-                    $this->currency . ' ' . number_format($item['price'], 2, $this->referenceformat[0],
-                        $this->referenceformat[1])), 0, 0, 'C', 1);
+                }						
                 if (isset($this->discountField)) {
                     $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
                     if (isset($item['discount'])) {
@@ -630,6 +859,9 @@ class GenerateInvoice extends FPDF
         }
     }
 
+    /**
+     * Generate footer on page
+     */
     public function Footer()
     {
         $this->SetY(-$this->margins['t']);
@@ -640,6 +872,11 @@ class GenerateInvoice extends FPDF
             'R');
     }
 
+    /**
+     * @param     $angle
+     * @param int $x
+     * @param int $y
+     */
     public function Rotate($angle, $x = -1, $y = -1)
     {
         if ($x == -1) {
@@ -663,6 +900,9 @@ class GenerateInvoice extends FPDF
         }
     }
 
+    /**
+     * End page
+     */
     public function _endpage()
     {
         if ($this->angle != 0) {

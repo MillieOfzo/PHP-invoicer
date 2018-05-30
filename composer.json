@@ -1,16 +1,16 @@
 {
-    "name": "MillieOfzo/pdf-invoice",
-    "description": "Library to generate PDF invoices",
+    "name": "millieofzo/php-invoicer",
+    "description": "Library to generate PDF invoices with PHP",
     "type": "library",
-    "license": "GPL-2.0-or-later",
-    "keywords": ["invoice", "pdf", "MillieOfzo", "artkonekt"],
+    "license": "MIT",
+    "keywords": ["invoice", "pdf", "php", "MillieOfzo"],
     "support": {
-        "source": "https://github.com/artkonekt/pdf-invoice"
+        "source": "https://github.com/MillieOfzo/PHP-invoicer"
     },
     "authors": [
         {
             "name": "Roelof Jan van Golen",
-            "homepage": "https://github.com/fulopattila122"
+            "homepage": "https://github.com/MillieOfzo"
         }
     ],
     "require": {

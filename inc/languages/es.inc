@@ -1,6 +1,9 @@
 <?php
+  $lang['subtotal']		= 'Total parcial';
+  $lang['orderid']		= 'Solicitar ID';
   $lang['number']		= 'Referencia';
   $lang['date']			= 'Fecha';
+  $lang['time']			= 'Tiempo de facturación';  
   $lang['due']			= 'Facha de vencimiento';
   $lang['to']			= 'Facturación a';
   $lang['from']			= 'Nuestra información ';

@@ -1,4 +1,5 @@
 <?php
+  $lang['subtotal']		= 'Subtotal';
   $lang['orderid']		= 'Order ID';
   $lang['number']		= 'Reference';
   $lang['date'] 		= 'Billing date';

@@ -1,7 +1,9 @@
 <?php
+  $lang['subtotal']		= 'Subtotaal';
   $lang['orderid']		= 'Order ID';
   $lang['number']		= 'Referentie';
   $lang['date']			= 'Aangemaakt';
+  $lang['time']			= 'Tijd';
   $lang['due']			= 'Vervaldatum';
   $lang['to']			= 'Begunstige';
   $lang['from']			= 'Onze gegevens';

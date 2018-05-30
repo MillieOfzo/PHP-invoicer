@@ -1,35 +1,49 @@
-# PDF Invoice
+# PHP Invoicerr
 
-[![Travis Build Status](https://img.shields.io/travis/artkonekt/pdf-invoice.svg?style=flat-square)](https://travis-ci.org/artkonekt/pdf-invoice)
-[![Packagist Stable Version](https://img.shields.io/packagist/v/konekt/pdf-invoice.svg?style=flat-square&label=stable)](https://packagist.org/packages/konekt/pdf-invoice)
-[![Packagist downloads](https://img.shields.io/packagist/dt/konekt/pdf-invoice.svg?style=flat-square)](https://packagist.org/packages/konekt/pdf-invoice)
-[![GPL Software License](https://img.shields.io/badge/license-GPL-blue.svg?style=flat-square)](LICENSE.md)
-
-This is a streamlined fork of [pdf-invoicr](https://github.com/farjadtahir/pdf-invoicr).
-
-Changes:
-- PHP 7.0 Support
+Features:
+- PHP 7.2 Support
 - PSR-4 compatible
 - Available as composer package
 - Dependencies are coming via composer
 
 ## Introduction
 
-PHP Invoice is a simple object oriented PHP class to generate beautifully designed invoices, quotes
+PHP Invoicer is a simple object oriented PHP class to generate beautifully designed invoices, quotes
 or orders with just a few lines of code. Brand it with your own logo and theme color, add unlimited
 items and total rows with automatic paging. You can deliver the PDF ouput in the user's browser,
-save on the server or force a file download. PHP Invoice is fully customizable and can be integrated
+save on the server or force a file download. PHP Invoicer is fully customizable and can be integrated
 into any well known CMS.
 
 ### Multi-languages & Currencies
 
-PHP Invoice has built in translations in English, Dutch, French, German, Spanish and Italian (you
-can easily add your own if needed) and you can set the currency needed per document.
+PHP Invoicer has built in translations in:
+- English
+- Dutch
+- French
+- German
+- Spanish
+- Italian 
+
+You can easily add your own if needed and you can set the currency needed per document.
 
 ### Additional Titles, Paragraphs And Badges
 
 Extra content (titles and multi-line paragraphs) can be added to the bottom of the document. You
 might use it for payment or shipping information or any other content needed.
+
+```php
+/* Set badge */
+$invoice->addBadge("Payment Paid");
+
+/* Add title */
+$invoice->addTitle("Important Notice");
+
+/* Add Paragraph */
+$invoice->addParagraph("No item will be replaced or refunded if you don't have the invoice with you. You can refund within 2 days of purchase.");
+
+/* Set footer note */
+$invoice->setFooternote("My Company Name Here");
+```
 
 ## Installation
 
@@ -42,53 +56,45 @@ composer require konekt/pdf-invoice
 There are 3 examples included in the `examples/` folder of this repo:
 - simple.php
 - example1.php
-- example2.php
-- change_timezone.php
+- invoice.php
 
 
 ### Create A New Invoice
 
-> Make sure that the default php date timezone is set before using the class.
-
 In this simple example we are generating an invoice with custom logo and theme color. It will
-contain 2 products and a box on the bottom with VAT and total price. Then we add a "Paid" badge
+contain 2 products and a box on the bottom with VAT 21% and total price. Then we add a "Paid" badge
 right before the output.
 
 ```php
-use Konekt\PdfInvoice\InvoicePrinter;
+use MillieOfzo\PHPInvoicer\GenerateInvoice;
 
-  $invoice = new InvoicePrinter();
-  
-  /* Header settings */
-  $invoice->setLogo("images/sample1.jpg");   //logo image path
-  $invoice->setColor("#007fff");      // pdf color scheme
-  $invoice->setType("Sale Invoice");    // Invoice Type
-  $invoice->setReference("INV-55033645");   // Reference
-  $invoice->setDate(date('M dS ,Y',time()));   //Billing Date
-  $invoice->setTime(date('h:i:s A',time()));   //Billing Time
-  $invoice->setDue(date('M dS ,Y',strtotime('+3 months')));    // Due Date
-  $invoice->setFrom(array("Seller Name","Sample Company Name","128 AA Juanita Ave","Glendora , CA 91740"));
-  $invoice->setTo(array("Purchaser Name","Sample Company Name","128 AA Juanita Ave","Glendora , CA 91740"));
-  
-  $invoice->addItem("AMD Athlon X2DC-7450","2.4GHz/1GB/160GB/SMP-DVD/VB",6,0,580,0,3480);
-  $invoice->addItem("PDC-E5300","2.6GHz/1GB/320GB/SMP-DVD/FDD/VB",4,0,645,0,2580);
-  $invoice->addItem('LG 18.5" WLCD',"",10,0,230,0,2300);
-  $invoice->addItem("HP LaserJet 5200","",1,0,1100,0,1100);
-  
-  $invoice->addTotal("Total",9460);
-  $invoice->addTotal("VAT 21%",1986.6);
-  $invoice->addTotal("Total due",11446.6,true);
-  
-  $invoice->addBadge("Payment Paid");
-  
-  $invoice->addTitle("Important Notice");
-  
-  $invoice->addParagraph("No item will be replaced or refunded if you don't have the invoice with you.");
-  
-  $invoice->setFooternote("My Company Name Here");
-  
-  $invoice->render('example1.pdf','I'); 
-  /* I => Display on browser, D => Force Download, F => local path save, S => return document path */
+    $invoice = new GenerateInvoice('','€','en');
+    
+    /* Header Settings */
+    $invoice->setLogo("../examples/images/ti_logo_yellow.png");
+    $invoice->setColor("#4d4c59");
+    $invoice->setType("Simple Invoice");
+    $invoice->setOrderid("2018052100012");
+    $invoice->setReference("55033645");
+    $invoice->setDate(date('d-m-Y',time()));
+    $invoice->setDue(date('d-m-Y',strtotime('+3 months')));
+    $invoice->hide_tofrom();
+    
+    /* Adding Items in table */
+    $invoice->addItem("AMD Athlon X2DC-7450","2.4GHz/1GB/160GB/SMP-DVD/VB",2,2);
+    $invoice->addItem("PDC-E5300","2.6GHz/1GB/320GB/SMP-DVD/FDD/VB",4,645);
+    
+      /* Add totals */
+    $invoice->addSubTotal();
+    $invoice->addVatTotal(21);
+    $invoice->addTotal(true);
+    
+    /* Set badge */
+    $invoice->addBadge("Payment Paid");
+    
+    /* Render */
+    /* I => Display on browser, D => Force Download, F => local path save, S => return document path */
+    $invoice->render('example2.pdf','I');
 ```
 
 ## Documentation
@@ -96,7 +102,7 @@ use Konekt\PdfInvoice\InvoicePrinter;
 ### Create Instances
 
 ```php
-use Konekt\PdfInvoice\InvoicePrinter;
+use MillieOfzo\PHPInvoicer\GenerateInvoice;
 
 // Default Param: Size: A4, Currency: $, Language: en
 $invoice = new InvoicePrinter($size, $currency, $language); 
@@ -151,6 +157,14 @@ $invoice->setLogo($image, $maxwidth, $maxheight);
 $invoice->setType($title);
 ```
 
+### Document order ID
+
+```php
+// Set order ID of document that will be displayed in
+// the right top corner of the document (e.g. '2018052100012')
+$invoice->setOrderid($orderid);
+```
+
 ### Invoice Number
 
 ```php
@@ -171,6 +185,8 @@ $invoice->setDate($date);
 ```php
 // A string with the document's due date
 $invoice->setDue($duedate);
+// Example
+$invoice->setDue(date('d-m-Y',strtotime('+3 months')));
 ```
 
 ### Issuer Information
@@ -225,31 +241,60 @@ Add a new product or service row to your document below the company and client i
 Invoice has automatic paging so there is absolutely no limit.
 
 ```php
-$invoice->addItem(name,description,amount,vat,price,discount,total);
+$invoice->addItem(name,description,quantity,price,vat,discount);
 ```
 
-name {string} A string with the
-product or service name. description {string} A string with the description with multi-line support.
-Use either <br> or \n to add a line-break. amount {decimal} An integer with the amount of this item.
-vat {string} or {decimal} Pass a string (e.g. "21%", or any other text you may like) or a decimal if
-you want to show an amount instead (e.g. 124.30) price {decimal} A decimal for the unit price.
-discount {string}, {decimal} or {boolean}Optional Pass a string (e.g. "10%", or any other text you
-may like) or a decimal if you want to show an amount instead (e.g. 50.00) If you do not want to give
-discount just enter the boolean false in this field. Note: the final output will not show a discount
-column when all of the products haven't set a discount. total {decimal} A decimal for the total
-product or service price.
+| Parameter            | Type   | Accepts                               | Note                                                                     |
+|:---------------------|:-------|:--------------------------------------|:-------------------------------------------------------------------------|
+| name | string |  |  A string with the product or service name.  |
+| description | string    |  | A string with the description with multi-line support. Use either <br> or \n to add a line-break. |
+| quantity  | int | Any integer  | Specify the amount of the product |
+| price  | int  | | The price of the product |
+| vat  | int    | Any int  | Specify a vat percentage e.g 21, which will calculate a 21% value from subtotal |
+| discount  | int    | | Specify a discount percentage e.g 10 |
 
-### Adding Totals
+### Adding Subtotal
 
-Add a row below the products and services for calculations and totals. You can add unlimited rows.
+Add a row below the products showing the calculated combined price amount of all products
 
 ```php
-$invoice->addTotal(name,value,background);
+$invoice->addSubTotal();
 ```
 
-name {string} A string for the display name of the total
-field. value {decimal} A decimal for the value. background {boolean}Optional Set to true to set the
-theme color as background color of the row.
+### Adding Discount
+
+Add a row below the products showing the calculated discount price. Specify the discount amount as a integer e.g 10.
+
+```php
+$invoice->addDiscountTotal($percent);
+```
+
+### Adding VAT
+
+Add a row below the products showing the calculated VAT amount. VAT is calculated after discount. Specify the VAT amount as a integer e.g 21.
+
+```php
+$invoice->addVatTotal($percent);
+```
+
+### Adding Total
+
+Add a row below the products and services with the total amount. Includes VAT amount and any discount amout
+
+```php
+$invoice->addTotal($colored);
+```
+
+### Adding Row
+
+Add a row below the products and services for calculations and totals. You can add unlimited rows.
+- $name {string} A string for the display name of the total
+- $value {decimal} A decimal for the value. 
+- $colored {boolean} Optional Set to true to set the theme color as background color of the row.
+
+```php
+$invoice->addRow($name,$value,$colored);
+```
 
 ### Adding A Badge
 
@@ -271,7 +316,7 @@ payment details or shipping information.
 $invoice->addTitle($title);
 ```
 
-title {string} A string with the title to display in the badge.
+- $title {string} A string with the title to display in the badge.
 
 ### Add Paragraph
 
@@ -282,8 +327,7 @@ payment details or shipping information.
 $invoice->addParagraph($paragraph);
 ```
 
-Paragraph {string} A string with the paragraph text with
-multi-line support. Use either <br> or \n to add a line-break.
+- $Paragraph {string} A string with the paragraph text with multi-line support. Use either <br> or \n to add a line-break.
 
 ### Footer
 
@@ -293,22 +337,24 @@ A small text you want to display on the bottom left corner of the document.
 $invoice->setFooternote($note);
 ```
 
-note {string} A string with the information you want to display in the footer.
+- $note {string} A string with the information you want to display in the footer.
 
 ### Rendering The Invoice
 
 ```php
 $invoice->render($name, $output);
+// Example: 
+// $invoice->render('invoice.pdf', 'S')
 ```
 
-name {string} A string with the name of your invoice.
+- $name {string} A string with the name of your invoice.
+- $output {string} Choose how you want the invoice to be delivered to the user. 
 
-Example: 'invoice.pdf'
-
-output {string} Choose how you want the invoice to be delivered to the user. The
-following options are available: I (Send the file inline to the browser) D (Send to the browser and
-force a file download with the name given by name) F (Save to a local file. Make sure to set pass
-the path in the name parameter) S (Return the document as a string)
+The following options are available: 
+- I (Send the file inline to the browser) 
+- D (Send to the browser and force a file download with the name given by name) 
+- F (Save to a local file. Make sure to set pass the path in the name parameter) 
+- S (Return the document as a string)
 
 ## Credits
 
