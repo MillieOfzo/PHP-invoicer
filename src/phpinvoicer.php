@@ -6,6 +6,7 @@
  * @author      Roelof Jan van Golen
  * @license     MIT
  * @since       2017-12-15
+ * @updated     2018-05-29
  *
  */
 
@@ -42,6 +43,7 @@ class PHPInvoicer extends FPDF
     public $totals;
     public $subtotal;
     public $badge;
+    public $badgeColor;
     public $addText;
     public $footernote;
     public $dimensions;
@@ -498,9 +500,15 @@ class PHPInvoicer extends FPDF
     /**
      * @param $badge
      */
-    public function addBadge($badge)
+    public function addBadge($badge, $color = false)
     {
         $this->badge = $badge;
+		$this->badgeColor = $this->color;
+		if($color != false)
+		{
+			$this->badgeColor = $this->hex2rgb($color);
+		}
+        
     }
 
     /**
@@ -823,8 +831,11 @@ class PHPInvoicer extends FPDF
             $resetY = $this->getY();
             $this->setXY($badgeX, $badgeY + 15);
             $this->SetLineWidth(0.4);
-            $this->SetDrawColor($this->color[0], $this->color[1], $this->color[2]);
-            $this->setTextColor($this->color[0], $this->color[1], $this->color[2]);
+			
+			$color = $this->badgeColor;
+			
+            $this->SetDrawColor($color[0], $color[1], $color[2]);
+            $this->setTextColor($color[0], $color[1], $color[2]);
             $this->SetFont($this->font, 'b', 15);
             $this->Rotate(10, $this->getX(), $this->getY());
             $this->Rect($this->GetX(), $this->GetY(), $this->GetStringWidth($badge) + 2, 10);
