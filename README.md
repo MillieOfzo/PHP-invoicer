@@ -1,4 +1,4 @@
-# PHP Invoicerr
+# PHP Invoicer
 
 Features:
 - PHP 7.2 Support
@@ -48,7 +48,7 @@ $invoice->setFooternote("My Company Name Here");
 ## Installation
 
 ```bash
-composer require konekt/pdf-invoice
+composer require millieofzo/php-invoicer
 ```
 
 ## Examples
