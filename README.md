@@ -1,6 +1,8 @@
-[![Packagist Stable Version](https://img.shields.io/packagist/v/millieofzo/php-invoicer.svg?style=flat-square&label=stable)](https://packagist.org/packages/millieofzo/php-invoicer)
-[![Packagist downloads](https://img.shields.io/packagist/dt/millieofzo/php-invoicer.svg?style=flat-square)](https://packagist.org/packages/millieofzo/php-invoicer)
-[![MIT Software License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
+[![Travis Build Status](https://img.shields.io/travis/millieofzo/php-invoicer.svg?style=flat-square)](https://travis-ci.org/millieofzo/php-invoicer)
+[![Latest Stable Version](https://poser.pugx.org/millieofzo/php-invoicer/v/stable)](https://packagist.org/packages/millieofzo/php-invoicer)
+[![Total Downloads](https://poser.pugx.org/millieofzo/php-invoicer/downloads)](https://packagist.org/packages/millieofzo/php-invoicer)
+[![Latest Unstable Version](https://poser.pugx.org/millieofzo/php-invoicer/v/unstable)](https://packagist.org/packages/millieofzo/php-invoicer)
+[![License](https://poser.pugx.org/millieofzo/php-invoicer/license)](https://packagist.org/packages/millieofzo/php-invoicer)
 
 # PHP Invoicer
 
@@ -106,7 +108,7 @@ use MillieOfzo\PHPInvoicer\PHPInvoicer;
 ### Create Instances
 
 ```php
-use MillieOfzo\PHPInvoicer\PHPInvoicer;
+use MillieOfzo\PHPInvoicer\GenerateInvoice;
 
 // Default Param: Size: A4, Currency: $, Language: en
 $invoice = new InvoicePrinter($size, $currency, $language); 
