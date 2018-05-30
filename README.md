@@ -108,10 +108,10 @@ use MillieOfzo\PHPInvoicer\PHPInvoicer;
 ### Create Instances
 
 ```php
-use MillieOfzo\PHPInvoicer\GenerateInvoice;
+use MillieOfzo\PHPInvoicer\PHPInvoicer;
 
 // Default Param: Size: A4, Currency: $, Language: en
-$invoice = new InvoicePrinter($size, $currency, $language); 
+$invoice = new PHPInvoicer($size, $currency, $language); 
 ```
 
 | Parameter | Type   | Accepts                          | Note                                                 |
