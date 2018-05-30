@@ -250,17 +250,18 @@ Add a new product or service row to your document below the company and client i
 Invoice has automatic paging so there is absolutely no limit.
 
 ```php
-$invoice->addItem(name,description,quantity,price,vat,discount);
+// $vat and $discount are optional
+$invoice->addItem($name,$description,$quantity,$price,$vat = false,$discount = false);
 ```
 
 | Parameter            | Type   | Accepts                               | Note                                                                     |
 |:---------------------|:-------|:--------------------------------------|:-------------------------------------------------------------------------|
 | name | string |  |  A string with the product or service name.  |
 | description | string    |  | A string with the description with multi-line support. Use either <br> or \n to add a line-break. |
-| quantity  | int | Any integer  | Specify the amount of the product |
-| price  | int  | | The price of the product |
-| vat  | int    | Any int  | Specify a vat percentage e.g 21, which will calculate a 21% value from subtotal |
-| discount  | int    | | Specify a discount percentage e.g 10 |
+| quantity  | int |  | Specify the amount of the product |
+| price  | int  | e.g 826 | The price of the product |
+| vat  | int    |  e.g 21, 8 | Specify a vat percentage, which will calculate a 21% value from subtotal |
+| discount  | int    |  e.g 10, 15, 20 | Specify a discount percentage, which will calculate a 10% discount on the subtotal|
 
 ### Adding Subtotal
 
