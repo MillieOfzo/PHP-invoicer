@@ -12,8 +12,7 @@
 
 namespace MillieOfzo\PHPInvoicer\Tests;
 
-require '../vendor/autoload.php';
-use MillieOfzo\PHPInvoicer\GenerateInvoice;
+use MillieOfzo\PHPInvoicer\PHPInvoicer;
 use PHPUnit\Framework\TestCase;
 
 class BaseClassTest extends TestCase
@@ -23,9 +22,9 @@ class BaseClassTest extends TestCase
      */
     public function can_be_instantiated()
     {
-        $invoicr =  new GenerateInvoice();
+        $invoicr =  new PHPInvoicer();
 
-         $this->assertInstanceOf(GenerateInvoice::class, $invoicr);
+         $this->assertInstanceOf(PHPInvoicer::class, $invoicr);
     }
 
 }

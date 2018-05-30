@@ -12,7 +12,6 @@
 
 namespace MillieOfzo\PHPInvoicer\Tests;
 
-require '../vendor/autoload.php';
 use PHPUnit\Framework\TestCase;
 
 class AAASmokeTest extends TestCase

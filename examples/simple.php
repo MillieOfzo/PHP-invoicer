@@ -1,7 +1,7 @@
 <?php
 require '../src/phpinvoicer.php';
 
-$invoice = new GenerateInvoice('','€','en');
+$invoice = new PHPInvoicer('','€','en');
 
 /* Header Settings */
 $invoice->setLogo("../examples/images/ti_logo_yellow.png");

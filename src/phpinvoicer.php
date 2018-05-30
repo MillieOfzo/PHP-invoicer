@@ -13,7 +13,7 @@ namespace MillieOfzo\PHPInvoicer;
 
 use FPDF;
 
-class GenerateInvoice extends FPDF
+class PHPInvoicer extends FPDF
 {
     public $angle = 0;
 

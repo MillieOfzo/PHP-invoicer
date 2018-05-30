@@ -1,10 +1,10 @@
 <?php
-require '../src/phpinvoicer.php';
+use MillieOfzo\PHPInvoicer\PHPInvoicer;
 
-$invoice = new GenerateInvoice('','€','en');
+$invoice = new PHPInvoicer('','€','en');
 
 /* Header Settings */
-$invoice->setLogo("../examples/images/ti_logo_yellow.png");
+$invoice->setLogo("/images/ti_logo_yellow.png");
 $invoice->setColor("#4d4c59");
 $invoice->setType("Invoice #75");
 $invoice->setOrderid("2018052100012");
