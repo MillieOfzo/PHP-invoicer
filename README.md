@@ -297,13 +297,14 @@ $invoice->addTotal($colored);
 ### Adding Row
 
 Add a row below the products and services for calculations and totals. You can add unlimited rows.
-- $name {string} A string for the display name of the total
-- $value {decimal} A decimal for the value. 
-- $colored {boolean} Optional Set to true to set the theme color as background color of the row.
 
 ```php
 $invoice->addRow($name,$value,$colored);
 ```
+
+- $name {string} A string for the display name of the total
+- $value {decimal} A decimal for the value. 
+- $colored {boolean} Optional Set to true to set the theme color as background color of the row.
 
 ### Adding A Badge
 
@@ -314,7 +315,7 @@ display that the invoice has been payed.
 $invoice->addBadge($badge);
 ```
 
-badge {string} A string with the text of the badge.
+- $badge {string} A string with the text of the badge.
 
 ### Add Title
 
