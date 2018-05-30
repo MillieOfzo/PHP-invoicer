@@ -1,7 +1,5 @@
 <?php
-require '../vendor/autoload.php';
-
-use MillieOfzo\PHPInvoicer\GenerateInvoice;
+require '../src/phpinvoicer.php';
 
 $invoice = new GenerateInvoice('','€','en');
 
