@@ -70,9 +70,9 @@ contain 2 products and a box on the bottom with VAT 21% and total price. Then we
 right before the output.
 
 ```php
-use MillieOfzo\PHPInvoicer\GenerateInvoice;
+use MillieOfzo\PHPInvoicer\PHPInvoicer;
 
-    $invoice = new GenerateInvoice('','€','en');
+    $invoice = new PHPInvoicer('','€','en');
     
     /* Header Settings */
     $invoice->setLogo("../examples/images/ti_logo_yellow.png");
@@ -106,7 +106,7 @@ use MillieOfzo\PHPInvoicer\GenerateInvoice;
 ### Create Instances
 
 ```php
-use MillieOfzo\PHPInvoicer\GenerateInvoice;
+use MillieOfzo\PHPInvoicer\PHPInvoicer;
 
 // Default Param: Size: A4, Currency: $, Language: en
 $invoice = new InvoicePrinter($size, $currency, $language); 
