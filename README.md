@@ -29,6 +29,7 @@ PHP Invoicer has built in translations in:
 - German
 - Spanish
 - Italian 
+- Portugese
 
 You can easily add your own if needed and you can set the currency needed per document.
 
